@@ -23,6 +23,5 @@ export class ArticlesService {
 
   getAllArticlesWithFilterSummary(filter: string) {
     return this.http.get<ArticleResponse>(this.baseUrl +  'articles/?limit=100&&summary_contains_one=' + filter);
-    //return this.http.get<ArticleResponse>(this.baseUrl +  'articles/?limit=100&summary_contains_one=' + filter).pipe(concatWith(this.http.get<ArticleResponse>(this.baseUrl +  'articles/?limit=100&&title_contains_one=' + filter)));
   }
 }

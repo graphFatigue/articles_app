@@ -4,7 +4,8 @@ import {
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import { Observable, combineLatest, map } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { ArticleResponse } from 'src/app/_models/articlesResponse';
 import { ArticlesService } from 'src/app/_services/articles.service';
 import { CardComponent } from '../card/card.component';
@@ -29,21 +30,25 @@ export class HomeComponent implements OnInit {
   }
 
   filterArticles(event: any) {
-    var filter: string = String(event.target.value).split(' ').filter(x => x!="" && x!= " ").join(',');
-    var articlesByTitle$ =
-      this.articlesService.getAllArticlesWithFilterTitle(filter);
-    var articlesBySummary$ =
-      this.articlesService.getAllArticlesWithFilterSummary(filter);
-      this.articles$ = combineLatest([articlesByTitle$, articlesBySummary$]).pipe(
-        map(([title, summary]) => {
-          const combinedResults = title.results.concat(summary.results);
-          return {
-            ...title,
-            results: this.uniqueArray(combinedResults, 'id')
-          };
-        })
-      );
-    this.formatTextTimeout(String(event.target.value));
+    const filter: string = String(event.target.value).trim().split(/\s+/).join(',');
+    if (!filter) {
+      this.loadArticles();
+      return;
+    }
+    const articlesByTitle$ = this.articlesService.getAllArticlesWithFilterTitle(filter);
+    const articlesBySummary$ = this.articlesService.getAllArticlesWithFilterSummary(filter);
+    this.articles$ = combineLatest([articlesByTitle$, articlesBySummary$]).pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(([title, summary]) => {
+        const combinedResults = title.results.concat(summary.results);
+        return of({
+          ...title,
+          results: this.uniqueArray(combinedResults, 'id')
+        });
+      })
+    );
+    this.formatTextTimeout(String(event.target.value).trim());
   }
 
   private uniqueArray(target: Array<any>, property: any): Array<any> {
@@ -54,20 +59,20 @@ export class HomeComponent implements OnInit {
   }
 
   formatTextTimeout(value: string) {
-    var values = value.split(' ');
+    const values = value.split(/\s+/).filter(x => x);
     setTimeout(() => {
       this.formatText(values);
     }, 1000);
   }
 
   formatText(values: string[]) {
-    var cardsArray: CardComponent[] = this.cards.toArray();
+    const cardsArray: CardComponent[] = this.cards.toArray();
     values.forEach((val) => {
       cardsArray.forEach((result) => {
-        if (result.article.summary.toLowerCase().includes(val)) {
+        if (result.article.summary.toLowerCase().includes(val.toLowerCase())) {
           result.formatSummary(val);
         }
-        if (result.article.title.toLowerCase().includes(val)) {
+        if (result.article.title.toLowerCase().includes(val.toLowerCase())) {
           result.formatTitle(val);
         }
       });

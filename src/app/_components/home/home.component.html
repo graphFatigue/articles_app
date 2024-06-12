@@ -10,6 +10,7 @@
         (input)="filterArticles($event)"
         aria-label="Search"
         matInput
+        oninput="this.value = this.value.replace(/\s+/g, ' ')"
         placeholder="Search for article"
       />
     </mat-form-field>

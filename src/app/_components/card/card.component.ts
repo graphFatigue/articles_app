@@ -22,28 +22,30 @@ export class CardComponent {
   }
 
   formatTitle(val: string) {
-    if (this.refEl2)
+    if (this.refEl2) {
       this.renderer.setProperty(
         this.refEl2.nativeElement,
         'innerHTML',
-        (this.article.title = this.getFormattedText(val, this.article.title))
+        this.getFormattedText(val, this.article.title)
       );
+    }
   }
 
   formatSummary(val: string) {
-    if (this.refEl1)
+    if (this.refEl1) {
       this.renderer.setProperty(
         this.refEl1.nativeElement,
         'innerHTML',
-        (this.article.summary = this.getFormattedText(
-          val,
-          this.article.summary
-        ))
+        this.getFormattedText(val, this.article.summary)
       );
+    }
   }
 
   getFormattedText(value: string, text: string) {
-    const valuestring = value.trim().split(' ');
+    const valuestring = value.trim().split(/\s+/).filter(str => str);
+    if (valuestring.length === 0) {
+      return text;
+    }
     const re = new RegExp(`(${valuestring.join('|')})`, 'gi');
     return text.replace(
       re,
