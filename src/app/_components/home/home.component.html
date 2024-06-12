@@ -1,0 +1,22 @@
+<div class="column-container">
+  <div style="background-color: white" class="example-form">
+    <mat-form-field style="background-color: white" class="example-full-width">
+      <mat-label>Search</mat-label>
+      <mat-icon matPrefix class="search-icon">search</mat-icon>
+      <input
+        #input
+        type="text"
+        ngModel
+        (input)="filterArticles($event)"
+        aria-label="Search"
+        matInput
+        placeholder="Search for article"
+      />
+    </mat-form-field>
+  </div>
+  <div *ngIf="(articles$ | async) as articles" class="lCards">
+    <div class="col mb-4" *ngFor="let article of articles.results">
+      <app-card #refEl [article]="article"></app-card>
+    </div>
+  </div>
+</div>
