@@ -56,8 +56,6 @@ export class CardComponent {
       if (responseDate != null) {
         const dt = new Date(responseDate);
         dt.setHours(dt.getHours() + 2);
-
-        // Create an Intl.DateTimeFormat object with the desired format
         const options: Intl.DateTimeFormatOptions = {
           year: 'numeric',
           month: 'long',

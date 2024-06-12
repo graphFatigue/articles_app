@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
   }
 
   filterArticles(event: any) {
-    var filter: string = String(event.target.value).split(' ').join(',');
+    var filter: string = String(event.target.value).split(' ').filter(x => x!="" && x!= " ").join(',');
     var articlesByTitle$ =
       this.articlesService.getAllArticlesWithFilterTitle(filter);
     var articlesBySummary$ =
