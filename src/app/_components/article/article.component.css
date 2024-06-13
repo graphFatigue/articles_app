@@ -1,0 +1,70 @@
+.article-page-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.article-card {
+  position: relative;
+  margin-top: 100px;
+  width: 80%;
+  max-width: 1200px;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.article-title {
+  font-size: 24px;
+  font-weight: lighter;
+  color: black;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  margin-bottom: 30px;
+  text-align: center;
+  display: grid;
+}
+
+.article-summary {
+  font-size: 16px;
+  line-height: 1.6;
+  color: black;
+  margin-bottom: 15px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.back-container {
+  width: 80%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: flex-start; /* Aligns the link to the left */
+}
+
+.back {
+  font-weight: bold;
+  color: rgba(0,0,0,1);
+  padding-left: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  margin-top: 20px;
+}
+
+.back:hover {
+  color: rgba(0,0,0,0.7);
+}

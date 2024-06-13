@@ -10,11 +10,10 @@ import { CardComponent } from './_components/card/card.component';
 import { HomeComponent } from './_components/home/home.component';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
-import { StoreModule } from '@ngrx/store';
-import { articleReducer } from './store/article.reducer';
+import { ArticleComponent } from './_components/article/article.component';
 
 @NgModule({
-  declarations: [AppComponent, CardComponent, HomeComponent],
+  declarations: [AppComponent, CardComponent, HomeComponent, ArticleComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -24,8 +23,7 @@ import { articleReducer } from './store/article.reducer';
     BrowserAnimationsModule,
     MatCardModule,
     MatIconModule,
-    HttpClientModule,
-    StoreModule.forRoot({ articleId: articleReducer }),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  QueryList,
-  ViewChildren,
-} from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Observable, combineLatest, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { ArticleResponse } from 'src/app/_models/articlesResponse';
@@ -18,6 +13,7 @@ import { CardComponent } from '../card/card.component';
 export class HomeComponent implements OnInit {
   articles$?: Observable<ArticleResponse>;
   @ViewChildren('refEl') cards!: QueryList<CardComponent>;
+  showResultsCount = false;
 
   constructor(private articlesService: ArticlesService) {}
 
@@ -31,17 +27,19 @@ export class HomeComponent implements OnInit {
 
   filterArticles(event: any) {
     const filter: string = String(event.target.value).trim().split(/\s+/).join(',');
+    this.showResultsCount = !!filter;
     if (!filter) {
       this.loadArticles();
       return;
     }
+    const articlesByTitleAll$ = this.articlesService.getAllArticlesWithFilterTitleAll(filter);
     const articlesByTitle$ = this.articlesService.getAllArticlesWithFilterTitle(filter);
     const articlesBySummary$ = this.articlesService.getAllArticlesWithFilterSummary(filter);
-    this.articles$ = combineLatest([articlesByTitle$, articlesBySummary$]).pipe(
+    this.articles$ = combineLatest([articlesByTitle$, articlesBySummary$, articlesByTitleAll$]).pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(([title, summary]) => {
-        const combinedResults = title.results.concat(summary.results);
+      switchMap(([title, summary, titleAll]) => {
+        const combinedResults = titleAll.results.concat(title.results.concat(summary.results));
         return of({
           ...title,
           results: this.uniqueArray(combinedResults, 'id')
@@ -67,15 +65,16 @@ export class HomeComponent implements OnInit {
 
   formatText(values: string[]) {
     const cardsArray: CardComponent[] = this.cards.toArray();
-    values.forEach((val) => {
-      cardsArray.forEach((result) => {
-        if (result.article.summary.toLowerCase().includes(val.toLowerCase())) {
-          result.formatSummary(val);
-        }
-        if (result.article.title.toLowerCase().includes(val.toLowerCase())) {
-          result.formatTitle(val);
-        }
-      });
+    cardsArray.forEach((result) => {
+      const titleMatches = values.some(val => result.article.title.toLowerCase().includes(val.toLowerCase()));
+      const summaryMatches = values.some(val => result.article.summary.toLowerCase().includes(val.toLowerCase()));
+
+      if (titleMatches) {
+        result.formatTitle(values);
+      }
+      if (summaryMatches) {
+        result.formatSummary(values);
+      }
     });
   }
 }

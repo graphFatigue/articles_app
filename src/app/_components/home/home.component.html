@@ -1,9 +1,10 @@
-<div class="column-container">
-  <div style="background-color: white" class="example-form">
-    <mat-form-field style="background-color: white" class="example-full-width">
-      <mat-label>Search</mat-label>
+<div style="align-items: flex-start;" class="column-container container">
+  <p class="keywords">Filter by keywords</p>
+  <div class="example-form">
+    <div class="example-full-width">
       <mat-icon matPrefix class="search-icon">search</mat-icon>
       <input
+        class="input-search"
         #input
         type="text"
         ngModel
@@ -11,13 +12,19 @@
         aria-label="Search"
         matInput
         oninput="this.value = this.value.replace(/\s+/g, ' ')"
-        placeholder="Search for article"
+        placeholder="Search"
       />
-    </mat-form-field>
+    </div>
   </div>
-  <div *ngIf="(articles$ | async) as articles" class="lCards">
-    <div class="col mb-4" *ngFor="let article of articles.results">
-      <app-card #refEl [article]="article"></app-card>
+  <div *ngIf="(articles$ | async) as articles">
+    <div *ngIf="showResultsCount" class="result-count">
+      Results: {{ articles.results.length }}
+      <div class="line"></div>
+    </div>
+    <div class="lCards">
+      <div class="col mb-4" *ngFor="let article of articles.results">
+        <app-card #refEl [article]="article"></app-card>
+      </div>
     </div>
   </div>
 </div>

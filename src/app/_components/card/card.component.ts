@@ -15,42 +15,41 @@ export class CardComponent {
 
   limitSummary(article: Article | undefined) {
     if (article) {
-      return article.summary.substring(0, 100);
+      return article.summary.substring(0, 97).trim().concat('...');
     } else {
       return 'ERROR';
     }
   }
 
-  formatTitle(val: string) {
+  formatTitle(values: string[]) {
     if (this.refEl2) {
       this.renderer.setProperty(
         this.refEl2.nativeElement,
         'innerHTML',
-        this.getFormattedText(val, this.article.title)
+        this.getFormattedText(values, this.article.title)
       );
     }
   }
 
-  formatSummary(val: string) {
+  formatSummary(values: string[]) {
     if (this.refEl1) {
       this.renderer.setProperty(
         this.refEl1.nativeElement,
         'innerHTML',
-        this.getFormattedText(val, this.article.summary)
+        this.getFormattedText(values, this.article.summary)
       );
     }
   }
 
-  getFormattedText(value: string, text: string) {
-    const valuestring = value.trim().split(/\s+/).filter(str => str);
-    if (valuestring.length === 0) {
-      return text;
-    }
-    const re = new RegExp(`(${valuestring.join('|')})`, 'gi');
-    return text.replace(
-      re,
-      `<span style="background-color:yellow" class="selected">$1</span>`
-    );
+  getFormattedText(values: string[], text: string) {
+    values.forEach((value) => {
+      const re = new RegExp(`(${value.trim().split(/\s+/).join('|')})`, 'gi');
+      text = text.replace(
+        re,
+        `<span style="background-color:yellow" class="selected">$1</span>`
+      );
+    });
+    return text;
   }
 
   convertToLocalDate(responseDate: any): string | null {
