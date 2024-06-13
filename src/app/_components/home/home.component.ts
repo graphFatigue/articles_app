@@ -26,23 +26,35 @@ export class HomeComponent implements OnInit {
   }
 
   filterArticles(event: any) {
-    const filter: string = String(event.target.value).trim().split(/\s+/).join(',');
+    const filter: string = String(event.target.value)
+      .trim()
+      .split(/\s+/)
+      .join(',');
     this.showResultsCount = !!filter;
     if (!filter) {
       this.loadArticles();
       return;
     }
-    const articlesByTitleAll$ = this.articlesService.getAllArticlesWithFilterTitleAll(filter);
-    const articlesByTitle$ = this.articlesService.getAllArticlesWithFilterTitle(filter);
-    const articlesBySummary$ = this.articlesService.getAllArticlesWithFilterSummary(filter);
-    this.articles$ = combineLatest([articlesByTitle$, articlesBySummary$, articlesByTitleAll$]).pipe(
+    const articlesByTitleAll$ =
+      this.articlesService.getAllArticlesWithFilterTitleAll(filter);
+    const articlesByTitle$ =
+      this.articlesService.getAllArticlesWithFilterTitle(filter);
+    const articlesBySummary$ =
+      this.articlesService.getAllArticlesWithFilterSummary(filter);
+    this.articles$ = combineLatest([
+      articlesByTitle$,
+      articlesBySummary$,
+      articlesByTitleAll$,
+    ]).pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap(([title, summary, titleAll]) => {
-        const combinedResults = titleAll.results.concat(title.results.concat(summary.results));
+        const combinedResults = titleAll.results.concat(
+          title.results.concat(summary.results)
+        );
         return of({
           ...title,
-          results: this.uniqueArray(combinedResults, 'id')
+          results: this.uniqueArray(combinedResults, 'id'),
         });
       })
     );
@@ -57,7 +69,7 @@ export class HomeComponent implements OnInit {
   }
 
   formatTextTimeout(value: string) {
-    const values = value.split(/\s+/).filter(x => x);
+    const values = value.split(/\s+/).filter((x) => x);
     setTimeout(() => {
       this.formatText(values);
     }, 1000);
@@ -66,8 +78,12 @@ export class HomeComponent implements OnInit {
   formatText(values: string[]) {
     const cardsArray: CardComponent[] = this.cards.toArray();
     cardsArray.forEach((result) => {
-      const titleMatches = values.some(val => result.article.title.toLowerCase().includes(val.toLowerCase()));
-      const summaryMatches = values.some(val => result.article.summary.toLowerCase().includes(val.toLowerCase()));
+      const titleMatches = values.some((val) =>
+        result.article.title.toLowerCase().includes(val.toLowerCase())
+      );
+      const summaryMatches = values.some((val) =>
+        result.article.summary.toLowerCase().includes(val.toLowerCase())
+      );
 
       if (titleMatches) {
         result.formatTitle(values);

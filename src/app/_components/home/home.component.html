@@ -1,4 +1,4 @@
-<div style="align-items: flex-start;" class="column-container container">
+<div style="align-items: flex-start" class="column-container container">
   <p class="keywords">Filter by keywords</p>
   <div class="example-form">
     <div class="example-full-width">
@@ -16,7 +16,7 @@
       />
     </div>
   </div>
-  <div *ngIf="(articles$ | async) as articles">
+  <div *ngIf="articles$ | async as articles">
     <div *ngIf="showResultsCount" class="result-count">
       Results: {{ articles.results.length }}
       <div class="line"></div>
